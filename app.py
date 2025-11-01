@@ -12,7 +12,8 @@ Notes:
  - Falls back to local `districts_data` if DB has no districts.
  - Reverse geocoding uses OpenStreetMap (Nominatim).
 """
-
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 import os
 import json
 import glob
@@ -132,6 +133,15 @@ def get_db_summary(district_id):
         return None
 
 # ------------------ ROUTES ------------------
+
+@app.route('/')
+def home():
+    return jsonify({"message": "MGNREGA Flask Backend is Running Successfully!"})
+
+@app.route('/api/test')
+def test():
+    return jsonify({"status": "ok", "message": "API connected properly"})
+
 
 @app.route('/api/districts', methods=['GET'])
 def list_districts():
@@ -282,7 +292,6 @@ def serve_frontend(path):
     return send_from_directory(app.static_folder, 'index.html')
 
 # ------------------ MAIN ------------------
-if __name__ == "__main__":
-    port = int(os.getenv('PORT', 8000))
-    # debug=True is convenient for local development; disable in production
-    app.run(host="0.0.0.0", port=port, debug=True)
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))  # Render assigns PORT dynamically
+    app.run(host='0.0.0.0', port=port)
